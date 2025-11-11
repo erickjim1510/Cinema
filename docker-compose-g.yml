@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  # 1. SERVICIO DEL BACKEND (Node.js/Express)
+  backend:
+    build:
+      context: ./cinema-backend # Ajusta la ruta a tu carpeta de backend
+      dockerfile: Dockerfile
+
+    container_name: cinema_backend
+
+    # Mapea el puerto 3000 interno al 3000 externo de la máquina host.
+    # El frontend se conectará a este puerto usando el nombre de servicio 'backend'.
+    ports:
+      - "3000:3000"
+
+    # Variables de entorno (si las tienes, por ejemplo, para la DB)
+    # environment:
+    # DB_HOST: db_service_name
+    # ...
+
+  # 2. SERVICIO DEL FRONTEND (Node.js/React/Vue, etc.)
+  frontend:
+    build:
+      context: ./cinema-frontend # Ajusta la ruta a tu carpeta de frontend
+      dockerfile: Dockerfile
+
+    container_name: cinema_frontend
+
+    # Mapea el puerto 3000 interno a un puerto diferente (ej. 8080) en el host.
+    # Así evitarás el conflicto con el backend (3000).
+    ports:
+      - "8080:3000"
+
+    # Nota Importante: Si tu frontend necesita hablar con el backend,
+    # la URL será: http://backend:3000 (el nombre del servicio y su puerto interno).
+    # Asegúrate de configurar esto en tu código de frontend.
+
+    # Opcional: Para garantizar que el backend se inicie primero
+    depends_on:
+      - backend
