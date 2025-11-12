@@ -1,0 +1,43 @@
+services:
+  web:
+    build:
+      context: ./cinema-backend
+      dockerfile: Dockerfile
+    container_name: cinema-backend
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mysql
+    environment:
+      - NODE_ENV=development
+    working_dir: /app/server
+    command: npm start
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cinema-frontend
+    restart: always
+    depends_on:
+      - web
+    ports:
+      - "5174:5173"       # 👈 aquí cambiamos el puerto
+    environment:
+      VITE_API_URL: http://localhost:4000
+    working_dir: /app/cliente
+    command: npm run dev -- --host
+
+  mysql:
+    image: mysql:8
+    container_name: cinema-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Sagas123
+      MYSQL_DATABASE: dbcinema
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./DbCinema.sql:/docker-entrypoint-initdb.d/DbCinema.sql
+

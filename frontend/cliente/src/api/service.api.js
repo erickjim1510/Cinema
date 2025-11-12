@@ -1,6 +1,7 @@
+
 import axios from "axios";
+import { API_URL } from "../apiConfig"; // 👈 sube una carpeta, luego apiConfig
 
 export default axios.create({
-    baseURL : "http://localhost:4000"   
-    
-})
+  baseURL: API_URL,
+});
